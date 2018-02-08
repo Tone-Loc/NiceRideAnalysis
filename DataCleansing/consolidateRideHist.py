@@ -1,3 +1,9 @@
+
+####      ####     ####      ####      ####
+# USE CONSOLIDATEFILES.PY INSTEAD OF THIS #
+####      ####     ####      ####      ####
+
+
 #import csv
 import os
 import pandas as pd
