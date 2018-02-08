@@ -1,6 +1,41 @@
-#import csv
+import csv
 import os
 import urllib.request
+
+def main():
+    #define main storage directory
+    rootDir = r'data/'
+    
+    #create root storage directory
+    setupDir(rootDir, 'root')
+     
+    #create download storage dir
+    zipDir = setupDir(rootDir, 'zipped', True)
+
+    #establish set of web addresses where the data is hosted
+    csvWebAddresses = dict(y2010 = 'https://niceridemn.egnyte.com/dd/byJLtGzvHM', 
+                           y2011 = 'https://niceridemn.egnyte.com/dd/8xAYjDuS3L',
+                           y2012 = 'https://niceridemn.egnyte.com/dd/GlYmbU2Bh0',
+                           y2013 = 'https://niceridemn.egnyte.com/dd/kdJ4WP0mHC',
+                           y2014 = 'https://niceridemn.egnyte.com/dd/MZxvOEELWQ',
+                           y2015 = 'https://niceridemn.egnyte.com/dd/9nSKfEfxQ8',
+                           y2016 = 'https://niceridemn.egnyte.com/dd/gYLZtGrwEk',
+                           y2017 = 'https://niceridemn.egnyte.com/dl/QrR5Ih5Xeq')
+    
+    #download the data
+    for y in csvWebAddresses.keys():     
+        urllib.request.urlretrieve(csvWebAddresses[y], zipDir + y + '.zip')
+
+    #create dir to unzip files to
+    unzipDir = setupDir(rootDir, 'unzipped', True)
+    
+    #unzip the files
+    unzipAll(zipDir, unzipDir)
+
+    #consolidateFiles(unzipDir, consolidateDir)
+
+#def consolidateFiles(sourceDir, targetDir):
+    
 
 def createDir(dir):
     #create storage directory
@@ -44,36 +79,5 @@ def unzipAll(zipDir, unzipDir):
         zip_ref = zipfile.ZipFile(fullFileAddress, 'r')
         zip_ref.extractall(unzipDir)
         zip_ref.close()
-
-def main():
-    #define main storage directory
-    rootDir = r'c:/users/a3bw9zz/desktop/niceRideDownloads/'
-    
-    #create root storage directory
-    setupDir(rootDir, 'root')
-     
-    #create download storage dir
-    zipDir = setupDir(rootDir, 'zipped', True)
-
-    #establish set of web addresses where the data is hosted
-    csvWebAddresses = dict(y2010 = 'https://niceridemn.egnyte.com/dd/byJLtGzvHM', 
-                           y2011 = 'https://niceridemn.egnyte.com/dd/8xAYjDuS3L',
-                           y2012 = 'https://niceridemn.egnyte.com/dd/GlYmbU2Bh0',
-                           y2013 = 'https://niceridemn.egnyte.com/dd/kdJ4WP0mHC',
-                           y2014 = 'https://niceridemn.egnyte.com/dd/MZxvOEELWQ',
-                           y2015 = 'https://niceridemn.egnyte.com/dd/9nSKfEfxQ8',
-                           y2016 = 'https://niceridemn.egnyte.com/dd/gYLZtGrwEk')
-    
-    #download the data
-    for y in csvWebAddresses.keys():     
-        urllib.request.urlretrieve(csvWebAddresses[y], zipDir + y + '.zip')
-
-    #
-
-    #create dir to unzip files to
-    unzipDir = setupDir(rootDir, 'unzipped', True)
-    
-    #unzip the files
-    unzipAll(zipDir, unzipDir)
 
 if __name__ == "__main__": main()
