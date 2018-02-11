@@ -1,10 +1,11 @@
+
 #import csv
 import os
 import pandas as pd
 import re
 # from unittest.mock import inplace
 
-# os.chdir('c:/github/nicerideanalysis/')
+print('cwd: ' + os.getcwd())
 
 #stuff that is already accomplished in the other file
 rootDir = r'data/'
@@ -16,11 +17,11 @@ for seasonFolder in os.listdir(unzipDir):
     
     #find the season dir
     seasonDir = unzipDir + seasonFolder
-    print(seasonDir)
+    print('navigating to ' + seasonDir)
     
     #find season history file
     file = [x for x in os.listdir(seasonDir) if re.match('^Nice_[Rr]ide_trip_history_20\d{2}_season.csv$', x)][0]
-    print(file)
+    print('opening ' + file)
     #get season history
     seasonHist = pd.read_csv(seasonDir + '/' + file)
     
@@ -48,9 +49,13 @@ for seasonFolder in os.listdir(unzipDir):
         seasonHist[durCol] = seasonHist[durCol] / 1000
         seasonHist.rename(columns={durCol: 'total duration (seconds)'}, inplace=True)
 
+    # remove periods from abbreviations so joins work (files are inconsistent)
+    for c in ['start station','end station']:
+        seasonHist[c] = seasonHist[c].apply(lambda x: re.sub('\\.', '', str(x)))
+
     #find season locations file    
     file = [x for x in os.listdir(seasonDir) if re.match('^Nice_Ride_20\d{2}[_-][Ss]tation[_-][Ll]ocations ?.csv$', x)][0]
-    print(file)
+    print('reading ' + file)
     #get season locations
     seasonLocs = pd.read_csv(seasonDir + '/' + file)
     
@@ -81,7 +86,8 @@ for seasonFolder in os.listdir(unzipDir):
     if 'number' in seasonLocs.columns:
         seasonLocs.rename(index=str, columns={'number': 'terminal'}, inplace = True)
 
-
+    # remove periods from abbreviations so joins work (files are inconsistent)
+    seasonLocs['station'] = seasonLocs['station'].apply(lambda x: re.sub('\\.', '', str(x)))
 
     """    
     #make sure station number columns are actually strings
@@ -130,33 +136,40 @@ for seasonFolder in os.listdir(unzipDir):
     if seasonsdf.shape[1] > 22:
         break
 
+del c, dropCols, durCol, file, leftCol, seasonDir, seasonFolder, seasonHist, seasonLocs, seasondf, unzipDir
 
 
 
 
 
-"""
-#get list of dirs with files to unzip
-seasonFolders = [f[0] for f in os.walk(unzipDir)][1:]
-
-seasonFolder = seasonFolders[0]
-
-for seasonFolder in seasonFolders:
-    #get ride history file
-    files = [f[2] for f in os.walk(seasonFolder)][0]
-    
-    for zippedSeasonDir in files:
-        print(zippedSeasonDir)
-        
-        
-    file = [x for x in files if re.match('Nice_[Rr]ide_trip_history_20\d{2}_season.csv', x)]
-    
-    #read file
-    pd.read_csv('c:/users/a3bw9zz/desktop/niceRideDownloads/Nice_ride_trip_history_2016_season.csv')
-    pd.read_csv(unzipDir + file[0])
-        
+seasonsdf.rename(columns = {'account type' = 'acctType',
+                            'e_nb docks' = 'eDocs', 'end station' = 'eStation','end date' = 'eDate',
 
 
-pd.read_csv()
-"""
+       's_install date', 's_lat', 's_long', 's_nb docks', 's_station',
+       's_terminal', 'start date', 'start station', 'start terminal',
+       'total duration (seconds)})
 
+'account type', 'e_install date', 'e_lat', 'e_long', 'e_nb docks',
+       'e_station', 'e_terminal', 'end date', 'end station', 'end terminal',
+       's_install date', 's_lat', 's_long', 's_nb docks', 's_station',
+       's_terminal', 'start date', 'start station', 'start terminal',
+       'total duration (seconds)
+
+# rename the columns
+
+
+# organize the columns
+
+# locations
+location =
+
+# rides
+
+# weather
+
+# calendar
+
+pd.to_csv(seasonsdf, index = False)
+
+os.ch
